@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>I ❤️ YOU</title>
+    <style>
+      :root {
+        --bg1: #ffb6c1;
+        --bg2: #ff9a8b;
+        --bg3: #fad0c4;
+        --accent: #ff3b6a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: linear-gradient(180deg, var(--bg1), var(--bg2), var(--bg3));
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
+      }
+      .stage {
+        height: 100%;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        position: relative;
+        user-select: none;
+        cursor: pointer;
+      }
+      .hint {
+        position: absolute;
+        bottom: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.9rem;
+        color: #b8c1cc;
+        opacity: 0.7;
+      }
+
+      /* Card */
+      .card {
+        width: min(720px, 92vw);
+        aspect-ratio: 16/9;
+        background: rgba(255, 255, 255, 0.26);
+        backdrop-filter: blur(8px);
+        border-radius: 28px;
+        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.25);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 1.2rem;
+        overflow: hidden;
+      }
+
+      /* Decorative bars */
+      .bar {
+        position: absolute;
+        top: 16%;
+        bottom: 16%;
+        width: 6px;
+        background: #fff;
+        border-radius: 6px;
+        opacity: 0;
+        z-index: 1;
+      }
+      .bar.left {
+        left: 50%;
+      }
+      .bar.right {
+        right: 50%;
+      }
+
+      /* Main "I ❤️ YOU" */
+      .txt {
+        z-index: 2;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-size: clamp(36px, 6vw, 68px);
+        opacity: 0;
+        transform: translateY(10px);
+        color: #5a0d1b;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      }
+      .heart {
+        width: 1.1em;
+        height: 1.1em;
+        display: grid;
+        place-items: center;
+        filter: drop-shadow(0 6px 12px rgba(255, 59, 106, 0.35));
+      }
+      .heart svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--accent);
+        transform-origin: center;
+      }
+
+      /* Anniversary block (2 lines) */
+      .anniv {
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 0.7rem;
+        opacity: 0;
+        transform: translateY(8px) scale(0.96);
+      }
+      .anniv-line1,
+      .anniv-line2 {
+        font-weight: 900;
+        text-align: center;
+        line-height: 1.1;
+        color: white;
+        -webkit-text-stroke: 1px var(--accent);
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      }
+      .anniv-line1 {
+        font-size: clamp(22px, 4.3vw, 36px);
+      }
+      .anniv-line2 {
+        font-size: clamp(20px, 3.8vw, 30px);
+        margin-top: 0.2rem;
+      }
+
+      /* Floating hearts layer */
+      #fx {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .float {
+        position: absolute;
+        bottom: -20px;
+        width: 14px;
+        height: 14px;
+        opacity: 0;
+      }
+
+      /* Animations */
+      @keyframes openL {
+        0% {
+          left: 50%;
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+        }
+        100% {
+          left: 8%;
+        }
+      }
+      @keyframes openR {
+        0% {
+          right: 50%;
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+        }
+        100% {
+          right: 8%;
+        }
+      }
+      @keyframes appear {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes beat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+      }
+      @keyframes popIn {
+        0% {
+          opacity: 0;
+          transform: translateY(8px) scale(0.96);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .anniv.play {
+        animation: popIn 420ms ease-out forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage" id="stage" title="Toca para repetir">
+      <div class="card">
+        <span class="bar left"></span>
+        <span class="bar right"></span>
+
+        <div class="txt" id="txt">
+          <span>I</span>
+          <span class="heart" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 21s-7.5-4.35-9.5-8.7C1.1 9 2.7 6 5.6 6 7.5 6 9 7.2 12 9.8 15 7.2 16.5 6 18.4 6c2.9 0 4.5 3 3.1 6.3C19.5 16.65 12 21 12 21z"
+              />
+            </svg>
+          </span>
+          <span>YOU</span>
+        </div>
+
+        <!-- Bloque de 2 líneas -->
+        <div class="anniv" id="anniv">
+          <div class="anniv-line1">FELIZ 1ER ANIVERSARIO</div>
+          <div class="anniv-line2">EMI 💕🌊</div>
+        </div>
+
+        <!-- Corazones flotantes detrás -->
+        <div id="fx"></div>
+      </div>
+      <div class="hint">toca para repetir 💫</div>
+    </div>
+
+    <script>
+      const stage = document.getElementById("stage");
+      const txt = document.getElementById("txt");
+      const leftBar = document.querySelector(".bar.left");
+      const rightBar = document.querySelector(".bar.right");
+      const fx = document.getElementById("fx");
+      const anniv = document.getElementById("anniv");
+
+      function rand(n) {
+        return Math.random() * n;
+      }
+
+      function reset() {
+        leftBar.style.animation = rightBar.style.animation = "none";
+        txt.style.animation = "none";
+        txt.style.opacity = 0;
+        anniv.classList.remove("play");
+        anniv.style.opacity = 0;
+        anniv.style.transform = "translateY(8px) scale(.96)";
+        document.querySelector(".heart svg").style.animation = "none";
+        fx.innerHTML = "";
+        void stage.offsetHeight;
+      }
+
+      function play() {
+        reset();
+        leftBar.style.opacity = 1;
+        rightBar.style.opacity = 1;
+        leftBar.style.animation =
+          "openL 900ms cubic-bezier(.2,.9,.2,1) forwards";
+        rightBar.style.animation =
+          "openR 900ms cubic-bezier(.2,.9,.2,1) forwards";
+
+        // Aparece I ❤ YOU
+        setTimeout(() => {
+          txt.style.animation = "appear 380ms ease-out forwards";
+          document.querySelector(".heart svg").style.animation =
+            "beat 900ms ease-in-out infinite";
+        }, 620);
+
+        // Luego aparece el bloque de aniversario
+        setTimeout(() => {
+          anniv.classList.add("play");
+        }, 1020);
+
+        // Corazones flotantes
+        for (let i = 0; i < 28; i++) {
+          const h = document.createElement("div");
+          h.className = "float";
+          h.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="currentColor" style="width:100%;height:100%"><path d="M12 21s-7.5-4.35-9.5-8.7C1.1 9 2.7 6 5.6 6 7.5 6 9 7.2 12 9.8 15 7.2 16.5 6 18.4 6c2.9 0 4.5 3 3.1 6.3C19.5 16.65 12 21 12 21z"/></svg>';
+          const x = 12 + rand(76);
+          const delay = 200 + rand(1200);
+          const dur = 2600 + rand(2200);
+          h.style.left = x + "%";
+          h.style.color =
+            i % 3 ? "rgba(255,59,106,.85)" : "rgba(255,255,255,.9)";
+          h.style.opacity = 0.0;
+          h.animate(
+            [
+              {
+                transform: `translate(-50%, 30px) scale(${0.6 + rand(0.9)})`,
+                opacity: 0,
+              },
+              { opacity: 0.85, offset: 0.2 },
+              {
+                transform: `translate(-50%, -${110 + rand(130)}px)`,
+                opacity: 0,
+              },
+            ],
+            {
+              duration: dur,
+              delay,
+              easing: "cubic-bezier(.2,.7,.2,1)",
+              fill: "forwards",
+            }
+          );
+          fx.appendChild(h);
+        }
+      }
+
+      play();
+      stage.addEventListener("click", play, false);
+    </script>
+  </body>
+</html>
