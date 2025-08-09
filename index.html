@@ -6,10 +6,12 @@
     <title>I ❤️ YOU</title>
     <style>
       :root {
-        --bg1: #ffb6c1;
-        --bg2: #ff9a8b;
-        --bg3: #fad0c4;
+        --bg1: #ffb6c1; /* rosado claro */
+        --bg2: #ff9a8b; /* rosado-naranja */
+        --bg3: #fad0c4; /* arena */
         --accent: #ff3b6a;
+        --ink: #5a0d1b;
+        --paper: #fff7f8;
       }
       * {
         box-sizing: border-box;
@@ -86,7 +88,7 @@
         font-size: clamp(36px, 6vw, 68px);
         opacity: 0;
         transform: translateY(10px);
-        color: #5a0d1b;
+        color: var(--ink);
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
       }
       .heart {
@@ -130,7 +132,7 @@
         margin-top: 0.2rem;
       }
 
-      /* Floating hearts layer */
+      /* Floating hearts layer (behind anniversary text) */
       #fx {
         position: absolute;
         inset: 0;
@@ -145,7 +147,123 @@
         opacity: 0;
       }
 
-      /* Animations */
+      /* HEART BUTTON "Léeme" */
+      .heart-btn {
+        position: absolute;
+        right: 22px;
+        bottom: 18px;
+        z-index: 4;
+        display: grid;
+        place-items: center;
+        gap: 0.25rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        outline: none;
+      }
+      .heart-shape {
+        width: 58px;
+        height: 52px;
+        position: relative;
+        transform: translateY(0);
+        animation: hbounce 2.4s ease-in-out infinite;
+        filter: drop-shadow(0 6px 12px rgba(255, 59, 106, 0.35));
+      }
+      .heart-shape svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--accent);
+      }
+      .heart-btn span {
+        font-weight: 800;
+        font-size: 0.9rem;
+        letter-spacing: 0.04em;
+        color: #fff;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      }
+      @keyframes hbounce {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-3px) scale(1.04);
+        }
+      }
+
+      /* MODAL: Carta */
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(6px);
+        z-index: 10;
+        padding: 18px;
+      }
+      .modal.show {
+        display: flex;
+      }
+      .letter {
+        width: min(760px, 92vw);
+        max-height: 86vh;
+        overflow: auto;
+        background: var(--paper);
+        border-radius: 20px;
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+        padding: 28px 24px;
+        animation: pop 280ms ease-out;
+      }
+      .letter h2 {
+        margin: 0 0 8px;
+        font-size: clamp(22px, 4vw, 30px);
+        color: var(--ink);
+      }
+      .meta {
+        color: #a05;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        margin-bottom: 10px;
+      }
+      .letter p {
+        color: #432;
+        font-size: clamp(16px, 2.6vw, 18px);
+        line-height: 1.6;
+        margin: 0.75rem 0;
+      }
+      .close {
+        position: sticky;
+        top: 0;
+        display: flex;
+        justify-content: end;
+        margin: -8px -8px 8px 0;
+      }
+      .close button {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 10px;
+      }
+      .close svg {
+        width: 28px;
+        height: 28px;
+        fill: #b33;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Animations base */
       @keyframes openL {
         0% {
           left: 50%;
@@ -195,7 +313,6 @@
           transform: translateY(0) scale(1);
         }
       }
-
       .anniv.play {
         animation: popIn 420ms ease-out forwards;
       }
@@ -222,13 +339,105 @@
         <!-- Bloque de 2 líneas -->
         <div class="anniv" id="anniv">
           <div class="anniv-line1">FELIZ 1ER ANIVERSARIO</div>
-          <div class="anniv-line2">EMI 💕🌊</div>
+          <div class="anniv-line2">EMI 💕</div>
         </div>
 
         <!-- Corazones flotantes detrás -->
         <div id="fx"></div>
+
+        <!-- Botón corazón: Léeme -->
+        <button class="heart-btn" id="openLetter" aria-label="Abrir carta">
+          <div class="heart-shape">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 21s-7.5-4.35-9.5-8.7C1.1 9 2.7 6 5.6 6 7.5 6 9 7.2 12 9.8 15 7.2 16.5 6 18.4 6c2.9 0 4.5 3 3.1 6.3C19.5 16.65 12 21 12 21z"
+              />
+            </svg>
+          </div>
+          <span>Abrir Carta</span>
+        </button>
       </div>
       <div class="hint">toca para repetir 💫</div>
+    </div>
+
+    <!-- MODAL: Carta -->
+    <div class="modal" id="modal">
+      <div class="letter">
+        <div class="close">
+          <button id="closeLetter" aria-label="Cerrar carta">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.3 19.71 2.89 18.3 9.17 12 2.89 5.71 4.3 4.29l6.29 6.3 6.29-6.3z"
+              />
+            </svg>
+          </button>
+        </div>
+        <h2>Para Emi</h2>
+        <div class="meta">
+          Nuestro primer año — <span id="placeOrDate">Hoy</span>
+        </div>
+        <p>
+          Hoy celebramos un año juntos, sé que se me ha vuelto una costumbre
+          darte este tipo de sorpresas digitales, pero me encanta poder hacer
+          esto para ti, algo que nunca había hecho antes. Sabes que es raro,
+          estar aquí, un año después, recuerdas que hace un año, nos escapamos
+          juntos a la playa, cada uno con sus miedos, sin una relación definida,
+          pero con la certeza de que algo especial estaba naciendo entre
+          nosotros.
+        </p>
+        <p>
+          Hoy estamos aquí, quizá no en el mismo lugar, pero cerca, y con
+          nuestras familias. Me siento afortunado de poder compartir este
+          momento contigo. Ha sido un año lleno de aprendizajes, risas y
+          momentos lindos. Hemos crecido juntos, enfrentado retos y disfrutado
+          de cada instante. Creo que en tan poco tiempo hemos logrado construir
+          una relación sólida, llena de amor y complicidad.
+        </p>
+        <p>
+          Si miras hace un año atrás, no hubiéramos imaginado lo lejos que hemos
+          llegado. Tú lograste tu certificación, yo logré mi maestría y justo
+          logramos obtener los papeles del terreno, algo que hace un año parecía
+          un sueño lejano. Hemos compartido momentos únicos, como nuestras
+          escapadas, las idas al cine, las veces que me has acompañado al verle
+          jugar a Liga, las cosas que hemos hecho en la Iglesia, o incluso lo
+          que hemos compartido con amigos y familia. Cada uno de esos momentos
+          ha sido especial y ha contribuido a lo que somos hoy.
+        </p>
+        <p>
+          Me encanta cómo hemos aprendido a conocernos, a respetarnos y a
+          apoyarnos mutuamente. Hemos creado un espacio seguro donde podemos ser
+          nosotros mismos, compartir nuestros sueños y preocupaciones, y
+          construir un futuro juntos. Y sí, se que tampoco todo ha sido
+          felicidad y risas, hemos tenido nuestros altibajos, pero creo que eso
+          es parte de cualquier relación. Lo importante es que hemos aprendido a
+          comunicarnos, a escucharnos y a encontrar soluciones juntos.
+        </p>
+        <p>
+          Me siento afortunado de tenerte a mi lado, de poder compartir mi vida
+          contigo y de seguir construyendo nuestra historia juntos. Sé que aún
+          nos queda mucho por vivir, pero estoy emocionado por todo lo que nos
+          espera. Gracias por ser mi compañera, mi amiga y mi amor. Gracias por
+          ser tú, por ser tan especial y por hacerme sentir tan amado.
+        </p>
+        <p>
+          De este año me guardo tres tesoros: <strong>tu sonrisa</strong>,
+          <strong>tus locuras </strong> y
+          <strong>tu forma de querer ayudar a los demás</strong>. Me haces
+          querer ser mejor.
+        </p>
+        <p>
+          Te prometo cosas pequeñas que suman: escucharte con calma, elegirte
+          cada día, y buscar la forma de sorprenderte, así como hoy.
+        </p>
+        <p>
+          Gracias por caminar conmigo. Lo que venga, lo construimos juntos. Te
+          amo.
+        </p>
+        <p style="margin-top: 1rem">
+          Nunca dejes de sonreír,<br />
+          <em>Te amo</em>
+        </p>
+      </div>
     </div>
 
     <script>
@@ -238,6 +447,11 @@
       const rightBar = document.querySelector(".bar.right");
       const fx = document.getElementById("fx");
       const anniv = document.getElementById("anniv");
+
+      /* carta modal */
+      const modal = document.getElementById("modal");
+      const openLetter = document.getElementById("openLetter");
+      const closeLetter = document.getElementById("closeLetter");
 
       function rand(n) {
         return Math.random() * n;
@@ -276,7 +490,7 @@
           anniv.classList.add("play");
         }, 1020);
 
-        // Corazones flotantes
+        // Corazones flotantes (detrás)
         for (let i = 0; i < 28; i++) {
           const h = document.createElement("div");
           h.className = "float";
@@ -314,6 +528,21 @@
 
       play();
       stage.addEventListener("click", play, false);
+
+      /* Abrir / cerrar carta */
+      openLetter.addEventListener("click", (e) => {
+        e.stopPropagation();
+        modal.classList.add("show");
+      });
+      closeLetter.addEventListener("click", (e) => {
+        e.stopPropagation();
+        modal.classList.remove("show");
+      });
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.remove("show");
+        }
+      });
     </script>
   </body>
 </html>
